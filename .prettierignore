@@ -1,0 +1,14 @@
+node_modules
+coverage
+.expo
+dist
+build
+web-build
+*.log
+.vscode
+.env
+.env.*.local
+.idea
+*.sublime-workspace
+*.sublime-project
+.expo-shared
