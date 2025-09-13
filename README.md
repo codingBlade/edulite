@@ -4,16 +4,23 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 
 ## Get started
 
-1. Install dependencies
+1. Clone the repository
+
+   ```bash
+   git clone https://github.com/QuintonCodes/edulite.git
+   cd edulite
+   ```
+
+2. Install dependencies
 
    ```bash
    npm install
    ```
 
-2. Start the app
+3. Start the app
 
    ```bash
-   npx expo start
+   npm run start
    ```
 
 In the output, you'll find options to open the app in a
@@ -25,15 +32,31 @@ In the output, you'll find options to open the app in a
 
 You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
-## Get a fresh project
+## Development Workflow
 
-When you're ready, run:
+We use the following tools to ensure consistency:
 
-```bash
-npm run reset-project
-```
+- **ESLint** for code linting and enforcing coding standards
+- **Jest** for running unit tests
+- **Prettier** for automatic code formatting
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+# Prettier Setup (Required)
+
+All developers **must install Prettier** to keep formatting consistent
+
+1. Install the **Prettier extension** in your editor:
+   - [VS Code Prettier extension](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+
+2. Enable **Format on Save** in your editor settings:
+
+   ```json
+   "editor.formatOnSave": true
+   ```
+
+3. Ensure Prettier is the default formatter:
+   ```json
+   "editor.defaultFormatter": "esbenp.prettier-vscode"
+   ```
 
 ## Learn more
 
@@ -41,10 +64,3 @@ To learn more about developing your project with Expo, look at the following res
 
 - [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
 - [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
