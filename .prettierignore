@@ -1,14 +1,34 @@
+# Dependencies
 node_modules
 coverage
+
+# Expo / React Native
 .expo
+.expo-shared
 dist
 build
 web-build
+
+# Logs
 *.log
+
+# IDE / Editor
 .vscode
-.env
-.env.*.local
 .idea
 *.sublime-workspace
 *.sublime-project
-.expo-shared
+
+# Environment files
+.env
+.env.*.local
+
+# Config files that shouldn't be reformatted
+.prettierrc.js
+.eslintrc.js
+.jest.config.js
+babel.config.js
+tsconfig.json
+webpack.config.js
+jest.config.ts
+app.json
+eslint.config.js
