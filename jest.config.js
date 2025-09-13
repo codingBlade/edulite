@@ -1,7 +1,6 @@
-import type { Config } from "jest"
-
-const config: Config = {
-  preset: "jest-expo",
+/** @type {import('jest').Config} */
+const config = {
+  preset: 'jest-expo',
   verbose: true,
   collectCoverage: true,
   collectCoverageFrom: [
@@ -13,9 +12,9 @@ const config: Config = {
     '!**/.expo/**',
   ],
   coverageDirectory: 'coverage',
-  transformIgnorePatterns:  [
-      "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg)"
-    ],
+  transformIgnorePatterns: [
+    'node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg)',
+  ],
   coverageThreshold: {
     global: {
       branches: 60,
@@ -26,6 +25,6 @@ const config: Config = {
   },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   testPathIgnorePatterns: ['/node_modules/', '/coverage/'],
-}
+};
 
-export default config
+module.exports = config;
