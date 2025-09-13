@@ -10,7 +10,8 @@
     "web": "expo start --web",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "type-check": "tsc --noEmit",
-    "test": "jest --watch --coverage",
+    "test": "jest --watch",
+    "test:ci": "jest --ci --coverage",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
@@ -44,39 +45,15 @@
     "react-native-worklets": "0.5.1"
   },
   "devDependencies": {
+    "@testing-library/jest-native": "^5.4.3",
+    "@testing-library/react-native": "^13.3.3",
+    "@types/jest": "^30.0.0",
     "@types/react": "~19.1.0",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~10.0.0",
     "prettier": "^3.6.2",
+    "react-test-renderer": "^19.1.0",
     "typescript": "~5.9.2"
-  },
-  "jest": {
-    "preset": "jest-expo",
-    "collectCoverage": true,
-    "collectCoverageFrom": [
-      "**/*.{ts,tsx,js,jsx}",
-      "!**/coverage/**",
-      "!**/node_modules/**",
-      "!**/babel.config.js",
-      "!**/expo-env.d.ts",
-      "!**/.expo/**"
-    ],
-    "coverageDirectory": "coverage",
-    "coverageThreshold": {
-      "global": {
-        "branches": 60,
-        "functions": 60,
-        "lines": 70,
-        "statements": 70
-      }
-    },
-    "setupFilesAfterEnv": [
-      "<rootDir>/jest-setup.js"
-    ],
-    "testPathIgnorePatterns": [
-      "/node_modules/",
-      "/coverage/"
-    ]
   },
   "private": true
 }
