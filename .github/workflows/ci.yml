@@ -38,7 +38,7 @@ jobs:
         run: npm run type-check
 
       - name: Run tests
-        run: npm run test:ci || echo "⚠️ No tests found, continuing..."
+        run: npm run test:ci
 
       - name: Upload coverage report
         if: ${{ always() }}
