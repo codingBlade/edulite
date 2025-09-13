@@ -23,7 +23,7 @@ const config = {
       statements: 70,
     },
   },
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   testPathIgnorePatterns: ['/node_modules/', '/coverage/'],
 };
 
