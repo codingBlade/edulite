@@ -5,11 +5,13 @@ export default function Index() {
     <View
       style={{
         flex: 1,
+        width: 'auto',
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: '#acacac',
       }}
     >
-      <Text>Edit app/index.tsx to edit this screen.</Text>
+      <Text>This is the home screen</Text>
     </View>
   );
 }
