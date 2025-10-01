@@ -2,9 +2,9 @@ name: CI
 
 on:
   pull_request:
-    branches: ['main']
+    branches: ["main"]
   push:
-    branches: ['main']
+    branches: ["main"]
 
 jobs:
   test:
@@ -17,12 +17,12 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 20
-          cache: 'npm'
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Run lint
+      - name: Run lint (mobile + backend)
         run: npm run lint
 
       - name: Check formatting with Prettier
@@ -34,11 +34,11 @@ jobs:
             exit 1
           )
 
-      - name: Run type check
+      - name: Run type check (mobile + backend)
         run: npm run type-check
 
-      - name: Run tests
-        run: npm run test:ci
+      - name: Run tests (mobile only for now)
+        run: npm run --workspace apps/mobile test:ci
 
       - name: Upload coverage report
         if: ${{ always() }}

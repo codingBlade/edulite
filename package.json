@@ -8,8 +8,14 @@
   "scripts": {
     "start:mobile": "npm --workspace apps/mobile start",
     "dev:backend": "npm --workspace apps/backend dev",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "format": "prettier --write ."
+    "lint:mobile": "npm --workspace apps/mobile run lint",
+    "lint:backend": "npm --workspace apps/backend run lint",
+    "lint": "npm run lint:mobile && npm run lint:backend",
+    "type-check:mobile": "npm --workspace apps/mobile run type-check",
+    "type-check:backend": "npm --workspace apps/backend run type-check",
+    "type-check": "npm run type-check:mobile && npm run type-check:backend",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "react": "19.1.0",
