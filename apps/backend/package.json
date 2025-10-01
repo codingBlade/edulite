@@ -6,7 +6,8 @@
     "dev": "next dev -p 4000",
     "build": "next build",
     "start": "next start -p 4000",
-    "lint": "eslint . --ext .ts,.tsx"
+    "lint": "eslint . --ext .ts,.tsx",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "react": "19.1.0",
