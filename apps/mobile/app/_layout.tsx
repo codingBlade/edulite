@@ -17,6 +17,7 @@ export default function RootLayout() {
         },
       }),
   );
+
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>

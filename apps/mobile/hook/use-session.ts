@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
-import { User } from '@/contexts/auth-context';
+import { User } from '@/apps/mobile/contexts/auth-context';
 
 type SessionResponse = {
   user: User | null;

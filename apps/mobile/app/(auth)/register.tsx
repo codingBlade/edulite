@@ -1,7 +1,8 @@
-import { useAuth } from '@/contexts/auth-context';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+
+import { useAuth } from '@/contexts/auth-context';
 
 export default function Register() {
   const { isLoading } = useAuth();

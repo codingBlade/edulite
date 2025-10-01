@@ -6,6 +6,6 @@ import Index from '@/app/(tabs)';
 describe('Index screen', () => {
   it('renders correctly', () => {
     const { getByText } = render(<Index />);
-    expect(getByText('Home Screen')).toBeTruthy();
+    expect(getByText('This is the home screen')).toBeTruthy();
   });
 });
