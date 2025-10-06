@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
-import { User } from '@/contexts/auth-context';
 import { getAccessToken } from '@/utils/api';
 import { API_BASE } from '@/utils/constants';
+import { User } from '@/utils/types';
 
 type SessionResponse = {
   user: User | null;
