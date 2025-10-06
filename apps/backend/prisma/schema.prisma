@@ -1,0 +1,130 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Roles {
+  student
+  teacher
+  admin
+}
+
+model User {
+  id         String    @id @default(cuid())
+  firstName  String
+  lastName   String
+  email      String    @unique
+  password   String
+  role       Roles @default(student)
+  avatarUrl  String?
+  language String
+  isVerified Boolean @default(false)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  lastLogin  DateTime?
+
+  notifications   Notification[]
+  achievements    Achievement[]
+  enrollments     Enrollment[]
+  progress        Progress[]
+  refreshTokens RefreshToken[]
+  verificationTokens VerificationToken[]
+}
+
+model RefreshToken {
+  id          String   @id @default(cuid())
+  token       String   @unique
+  userId      String
+  createdAt   DateTime @default(now())
+  expiresAt   DateTime
+  revoked     Boolean  @default(false)
+
+  user        User     @relation(fields: [userId], references: [id])
+}
+
+model VerificationToken {
+  id          String   @id @default(cuid())
+  userId      String
+  token       String   @unique
+  type        String   // e.g. "email_verification" or "password_reset"
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id])
+}
+
+model Subject {
+  id            String       @id @default(cuid())
+  title         String
+  description   String?
+  thumbnailUrl  String?
+  createdAt     DateTime     @default(now())
+
+  lessons       Lesson[]
+  achievements  Achievement[]
+  enrollments   Enrollment[]
+}
+
+model Lesson {
+  id            String       @id @default(cuid())
+  title         String
+  content String?
+  order       Int
+  subjectId   String
+  createdAt   DateTime    @default(now())
+
+  subject     Subject     @relation(fields: [subjectId], references: [id])
+  progress    Progress[]
+}
+
+model Enrollment {
+  id        String    @id @default(cuid())
+  userId    String
+  subjectId String
+  enrolledAt DateTime @default(now())
+
+  user      User      @relation(fields: [userId], references: [id])
+  subject   Subject   @relation(fields: [subjectId], references: [id])
+}
+
+model Progress {
+  id        String     @id @default(cuid())
+  userId    String
+  lessonId  String
+  completed Boolean    @default(false)
+  updatedAt DateTime   @updatedAt
+
+  user      User       @relation(fields: [userId], references: [id])
+  lesson    Lesson     @relation(fields: [lessonId], references: [id])
+}
+
+model Achievement {
+  id          String       @id @default(cuid())
+  title       String
+  description String?
+  iconUrl     String?
+  userId      String
+  subjectId   String?
+  createdAt   DateTime     @default(now())
+
+  user        User         @relation(fields: [userId], references: [id])
+  subject     Subject?     @relation(fields: [subjectId], references: [id])
+  notification Notification?
+}
+
+model Notification {
+  id            String       @id @default(cuid())
+  userId        String
+  title         String
+  message       String
+  isRead        Boolean       @default(false)
+  createdAt     DateTime      @default(now())
+  achievementId String?       @unique
+
+  user          User          @relation(fields: [userId], references: [id])
+  achievement   Achievement?  @relation(fields: [achievementId], references: [id])
+}

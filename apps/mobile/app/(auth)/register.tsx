@@ -1,45 +1,98 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 import { useAuth } from '@/contexts/auth-context';
+import { RegisterInput, registerSchema } from '@/utils/types';
 
 export default function Register() {
-  const { isLoading } = useAuth();
+  const { isLoading, register: registerUser } = useAuth();
   const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
 
-  async function handleRegister() {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<RegisterInput>({
+    resolver: zodResolver(registerSchema),
+    mode: 'onChange',
+  });
+
+  async function onSubmit(data: RegisterInput) {
     try {
-      setError(null);
+      registerSchema.safeParse(data);
+      // TODO: Implement toast and parse check
+      await registerUser(data);
       router.replace('/login');
     } catch (error) {
-      setError((error as Error).message || 'Registration failed');
+      console.error('Registration failed: ', error);
     }
   }
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Create account</Text>
-      {!!error && <Text style={styles.error}>{error}</Text>}
-      <TextInput
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        style={styles.input}
-        keyboardType="email-address"
-        autoCapitalize="none"
+
+      <Controller
+        control={control}
+        name="firstName"
+        render={({ field: { onChange, value } }) => (
+          <TextInput placeholder="First Name" value={value} onChangeText={onChange} style={styles.input} />
+        )}
       />
-      <TextInput
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        style={styles.input}
-        secureTextEntry
+      {errors.firstName && <Text style={styles.error}>{errors.firstName.message}</Text>}
+
+      <Controller
+        control={control}
+        name="lastName"
+        render={({ field: { onChange, value } }) => (
+          <TextInput placeholder="Last Name" value={value} onChangeText={onChange} style={styles.input} />
+        )}
       />
-      <TouchableOpacity style={styles.button} onPress={handleRegister} disabled={isLoading}>
+      {errors.lastName && <Text style={styles.error}>{errors.lastName.message}</Text>}
+
+      <Controller
+        control={control}
+        name="email"
+        render={({ field: { onChange, value } }) => (
+          <TextInput
+            placeholder="Email"
+            value={value}
+            onChangeText={onChange}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            style={styles.input}
+          />
+        )}
+      />
+      {errors.email && <Text style={styles.error}>{errors.email.message}</Text>}
+
+      <Controller
+        control={control}
+        name="password"
+        render={({ field: { onChange, value } }) => (
+          <TextInput
+            placeholder="Password"
+            value={value}
+            onChangeText={onChange}
+            secureTextEntry
+            style={styles.input}
+          />
+        )}
+      />
+      {errors.password && <Text style={styles.error}>{errors.password.message}</Text>}
+
+      <Controller
+        control={control}
+        name="language"
+        render={({ field: { onChange, value } }) => (
+          <TextInput placeholder="Preferred Language" value={value} onChangeText={onChange} style={styles.input} />
+        )}
+      />
+      {errors.language && <Text style={styles.error}>{errors.language.message}</Text>}
+
+      <TouchableOpacity style={styles.button} onPress={handleSubmit(onSubmit)} disabled={isLoading}>
         <Text style={styles.buttonText}>{isLoading ? 'Creating...' : 'Create account'}</Text>
       </TouchableOpacity>
 
