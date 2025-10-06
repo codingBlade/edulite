@@ -25,7 +25,7 @@ export type User = {
   password: string;
   language: string;
   role: 'student' | 'teacher' | 'admin';
-  avatarUrl?: string;
+  avatarUrl: string | null;
   isVerified: boolean;
   createdAt: Date;
 };

@@ -2,7 +2,6 @@ import bcrypt from 'bcryptjs';
 import { SignJWT, jwtVerify } from 'jose';
 import { NextRequest, NextResponse } from 'next/server';
 
-import { User } from '@prisma/client';
 import { db } from './db';
 
 type JwtPayload = {
@@ -12,6 +11,19 @@ type JwtPayload = {
   exp?: number;
   iss?: string;
   aud?: string;
+};
+
+type User = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  language: string;
+  role: 'student' | 'teacher' | 'admin';
+  avatarUrl: string | null;
+  isVerified: boolean;
+  createdAt: Date;
 };
 
 type AuthenticatedRequest = NextRequest & {
