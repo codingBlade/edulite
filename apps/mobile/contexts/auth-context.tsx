@@ -6,13 +6,8 @@ import { createStore, StoreApi, useStore } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
 import { useSessionQuery } from '@/hook/use-session';
-
-export type User = {
-  id: string;
-  name: string;
-  email: string;
-  password: string;
-};
+import { API_BASE } from '@/utils/constants';
+import type { RegisterInput, User } from '@/utils/types';
 
 type AuthStore = {
   user: User | null;
@@ -22,18 +17,14 @@ type AuthStore = {
   logout: () => Promise<void>;
   updateUser: (user?: Partial<User> | ((prev: User) => Partial<User>)) => void;
   refreshSession: () => Promise<void>;
+  register: (data: RegisterInput) => Promise<void>;
+  login: (email: string, password: string) => Promise<void>;
 };
 
 const secureStorage = {
-  getItem: async (name: string) => {
-    return await SecureStore.getItemAsync(name);
-  },
-  setItem: async (name: string, value: string) => {
-    await SecureStore.setItemAsync(name, value);
-  },
-  removeItem: async (name: string) => {
-    await SecureStore.deleteItemAsync(name);
-  },
+  getItem: async (name: string) => await SecureStore.getItemAsync(name),
+  setItem: async (name: string, value: string) => await SecureStore.setItemAsync(name, value),
+  removeItem: async (name: string) => await SecureStore.deleteItemAsync(name),
 };
 
 const AuthContext = createContext<StoreApi<AuthStore> | undefined>(undefined);
@@ -48,6 +39,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
           user: null,
           isAuthenticated: false,
           isLoading: true,
+
           setUser: (user) => {
             set({
               user: user ?? null,
@@ -55,9 +47,10 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
               isLoading: false,
             });
           },
+
           logout: async () => {
             try {
-              await axios.post('/api/auth/logout');
+              await axios.post(`${API_BASE}/auth/logout`);
             } finally {
               set({ user: null, isAuthenticated: false, isLoading: false });
 
@@ -65,21 +58,45 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
               get().refreshSession();
             }
           },
+
           updateUser: (user) => {
             const currentUser = get().user;
             if (!currentUser) return;
 
-            if (typeof user === 'function') {
-              const updatedUser = user(currentUser);
-              set({ user: { ...currentUser, ...updatedUser } });
-            } else {
-              set({
-                user: { ...currentUser, ...user },
-              });
-            }
+            const updatedUser = typeof user === 'function' ? user(currentUser) : user;
+            set({ user: { ...currentUser, ...updatedUser } });
           },
+
           refreshSession: async () => {
             await queryClient.invalidateQueries({ queryKey: ['session'] });
+          },
+
+          register: async (data) => {
+            set({ isLoading: true });
+            try {
+              const res = await axios.post(`${API_BASE}/auth/register`, data);
+              const { user, accessToken } = res.data;
+
+              await SecureStore.setItemAsync('accessToken', accessToken);
+              set({ user, isAuthenticated: true, isLoading: false });
+            } catch (error: any) {
+              set({ isLoading: false });
+              throw new Error(error.response?.data?.error || 'Registration failed');
+            }
+          },
+
+          login: async (email, password) => {
+            set({ isLoading: true });
+            try {
+              const res = await axios.post(`${API_BASE}/auth/login`, { email, password });
+              const { user, accessToken } = res.data;
+
+              await SecureStore.setItemAsync('accessToken', accessToken);
+              set({ user, isAuthenticated: true, isLoading: false });
+            } catch (error: any) {
+              set({ isLoading: false });
+              throw new Error(error.response?.data?.error || 'Login failed');
+            }
           },
         }),
         {

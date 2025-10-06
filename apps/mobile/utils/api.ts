@@ -1,54 +1,69 @@
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 import * as SecureStore from 'expo-secure-store';
 
 import { ACCESS_KEY, API_BASE, REFRESH_KEY } from './constants';
 
-async function getAccess() {
+export async function getAccessToken() {
   return await SecureStore.getItemAsync(ACCESS_KEY);
 }
 
-async function getRefresh() {
+export async function getRefreshToken() {
   return await SecureStore.getItemAsync(REFRESH_KEY);
 }
 
 export async function apiFetch(input: string, config: AxiosRequestConfig = {}) {
-  const access = await getAccess();
+  const access = await getAccessToken();
+
   const headers: Record<string, string> = {
     ...(config.headers as Record<string, string>),
     'Content-Type': 'application/json',
   };
+
   if (access) headers['Authorization'] = `Bearer ${access}`;
 
-  let response = await axios.request({
-    url: `${API_BASE}${input}`,
-    method: config.method ?? 'GET',
-    ...config,
-    headers,
-  });
+  try {
+    const response = await axios.request({
+      url: `${API_BASE}${input}`,
+      method: config.method ?? 'GET',
+      ...config,
+      headers,
+    });
 
-  if (response.status === 401) {
-    const refresh = await getRefresh();
-    if (!refresh) return response;
+    return response;
+  } catch (error) {
+    if ((error as AxiosError).response?.status === 401) {
+      const refreshToken = await getRefreshToken();
+      if (!refreshToken) throw error;
 
-    const refreshResponse = await axios.post<{ accessToken: string; refreshToken?: string }>(
-      `${API_BASE}/auth/refresh`,
-      { token: refresh },
-    );
+      try {
+        const refreshResponse = await axios.post<{ accessToken: string; refreshToken?: string }>(
+          `${API_BASE}/auth/refresh`,
+          { refreshToken },
+        );
 
-    const data = refreshResponse.data;
-    if (data.accessToken) {
-      await SecureStore.setItemAsync(ACCESS_KEY, data.accessToken);
-      if (data.refreshToken) await SecureStore.setItemAsync(REFRESH_KEY, data.refreshToken);
-      headers['Authorization'] = `Bearer ${data.accessToken}`;
+        const data = refreshResponse.data;
+        if (data.accessToken) {
+          await SecureStore.setItemAsync(ACCESS_KEY, data.accessToken);
+          if (data.refreshToken) await SecureStore.setItemAsync(REFRESH_KEY, data.refreshToken);
 
-      response = await axios.request({
-        url: `${API_BASE}${input}`,
-        method: config.method ?? 'GET',
-        ...config,
-        headers,
-      });
+          // Retry original request
+          headers['Authorization'] = `Bearer ${data.accessToken}`;
+
+          const retryResponse = await axios.request({
+            url: `${API_BASE}${input}`,
+            method: config.method ?? 'GET',
+            ...config,
+            headers,
+          });
+
+          return retryResponse;
+        }
+      } catch (refreshError) {
+        console.error('Token refresh failed:', refreshError);
+        throw refreshError;
+      }
     }
-  }
 
-  return response;
+    throw error;
+  }
 }

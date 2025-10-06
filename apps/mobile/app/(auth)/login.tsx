@@ -1,50 +1,76 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 import { useAuth } from '@/contexts/auth-context';
+import { LoginInput, loginSchema } from '@/utils/types';
 
 export default function Login() {
-  const { isLoading } = useAuth();
+  const { isLoading, login: loginUser } = useAuth();
   const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
 
-  async function handleLogin() {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginInput>({
+    resolver: zodResolver(loginSchema),
+    mode: 'onChange',
+  });
+
+  async function onSubmit(data: LoginInput) {
     try {
-      setError(null);
+      loginSchema.safeParse(data);
+      // TODO: Implement toast and parse check
+      await loginUser(data.email, data.password);
       router.replace('/');
     } catch (error) {
-      setError((error as Error).message || 'Login failed');
+      console.error('Login failed: ', error);
     }
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Sign in</Text>
-      {!!error && <Text style={styles.error}>{error}</Text>}
-      <TextInput
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        style={styles.input}
-        keyboardType="email-address"
-        autoCapitalize="none"
+      <Text style={styles.title}>Welcome Back! Login</Text>
+
+      <Controller
+        control={control}
+        name="email"
+        render={({ field: { onChange, value } }) => (
+          <TextInput
+            placeholder="Email"
+            value={value}
+            onChangeText={onChange}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            style={styles.input}
+          />
+        )}
       />
-      <TextInput
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        style={styles.input}
-        secureTextEntry
+      {errors.email && <Text style={styles.error}>{errors.email.message}</Text>}
+
+      <Controller
+        control={control}
+        name="password"
+        render={({ field: { onChange, value } }) => (
+          <TextInput
+            placeholder="Password"
+            value={value}
+            onChangeText={onChange}
+            secureTextEntry
+            style={styles.input}
+          />
+        )}
       />
-      <TouchableOpacity style={styles.button} onPress={handleLogin} disabled={isLoading}>
-        <Text style={styles.buttonText}>{isLoading ? 'Signing in...' : 'Sign in'}</Text>
+      {errors.password && <Text style={styles.error}>{errors.password.message}</Text>}
+
+      <TouchableOpacity style={styles.button} onPress={handleSubmit(onSubmit)} disabled={isLoading}>
+        <Text style={styles.buttonText}>{isLoading ? 'Logging in...' : 'Login'}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => router.push('/register')}>
-        <Text style={styles.link}>Create account</Text>
+        <Text style={styles.link}>Don&apos;t have an account ? Create account</Text>
       </TouchableOpacity>
     </View>
   );
