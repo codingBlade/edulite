@@ -10,7 +10,7 @@ export const achievementData: Achievement[] = [
   },
   {
     id: '2',
-    icon: { name: 'fire', library: 'Ionicons', color: '#ef4444' },
+    icon: { name: 'flame', library: 'Ionicons', color: '#ef4444' },
     title: 'Week Streak',
     subtitle: 'Study for 7 consecutive days',
     earned: true,
