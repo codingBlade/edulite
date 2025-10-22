@@ -23,6 +23,10 @@ afterEach(() => {
   jest.clearAllTimers();
 });
 
+afterAll(() => {
+  jest.useRealTimers();
+});
+
 jest.mock('@expo/vector-icons', () => ({
   Ionicons: () => null,
   FontAwesome5: () => null,

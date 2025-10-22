@@ -7,6 +7,9 @@ const createTestQueryClient = () =>
     defaultOptions: {
       queries: {
         retry: false,
+        refetchOnWindowFocus: false,
+        // cacheTime: 0,
+        staleTime: Infinity,
       },
     },
   });
