@@ -1,6 +1,17 @@
 import React, { useContext } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { LanguageContext } from './LanguageContext';
+
+type LanguageContextType = {
+  language: string;
+  changeLanguage: (lang: string) => void;
+  translations: { [key: string]: string };
+};
+
+const LanguageContext = React.createContext<LanguageContextType>({
+  language: 'eng',
+  changeLanguage: () => {},
+  translations: { selectLanguage: 'Select language', welcome: 'Welcome' },
+});
 
 type LanguageSelectProps = {
   onComplete?: () => void;

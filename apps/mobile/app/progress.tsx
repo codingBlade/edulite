@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useEffect, useRef, useState } from 'react';
 import { Alert, Animated, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { badge_Tier } from './Data/badges/badge_Tier';
+import { badge_Tier } from '../Badges/badge_Tier';
 
 // Key constants for storage
 const STORAGE_KEYS = {

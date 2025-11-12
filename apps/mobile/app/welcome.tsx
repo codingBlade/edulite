@@ -7,19 +7,12 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLanguageStore } from '@/hooks/useLanguageStore';
 const logo = require('../assets/images/logo-icon.png');
 
-type Language = 'english' | 'afrikaans' | null;
-
 export default function Welcome() {
   const { selectedLanguage, setLanguage } = useLanguageStore();
   const [errorMessage, setErrorMessage] = useState<string>('');
 
-  function handleLanguageSelect(language: Language) {
-    setLanguage(language);
-    setErrorMessage('');
-  }
-
   function handleNavigation(route: string) {
-    if (!selectedLanguage) {
+    if (!selectedLanguage && route !== '/language-select') {
       setErrorMessage('Please select a language before continuing.');
       return;
     }
@@ -40,40 +33,18 @@ export default function Welcome() {
 
         {/* Language Selection */}
         <View style={styles.languageSection}>
-          <View style={styles.languageHeader}>
-            <Ionicons name="globe-outline" size={20} color="#666" />
-            <Text style={styles.languageLabel}>Choose your language</Text>
-          </View>
-
-          <View style={styles.languageButtons}>
-            <TouchableOpacity
-              style={[styles.languageButton, selectedLanguage === 'english' && styles.selectedLanguageButton]}
-              onPress={() => handleLanguageSelect('english')}
-            >
-              <View style={styles.languageButtonContent}>
-                <Text style={styles.flagEmoji}>🇺🇸</Text>
-                <Text
-                  style={[styles.languageButtonText, selectedLanguage === 'english' && styles.selectedLanguageText]}
-                >
-                  English
-                </Text>
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.languageButton, selectedLanguage === 'afrikaans' && styles.selectedLanguageButton]}
-              onPress={() => handleLanguageSelect('afrikaans')}
-            >
-              <View style={styles.languageButtonContent}>
-                <Text style={styles.flagEmoji}>🇿🇦</Text>
-                <Text
-                  style={[styles.languageButtonText, selectedLanguage === 'afrikaans' && styles.selectedLanguageText]}
-                >
-                  Afrikaans
-                </Text>
-              </View>
-            </TouchableOpacity>
-          </View>
+          {/* Language Selection Button */}
+          <TouchableOpacity style={styles.languageSelectButton} onPress={() => router.push('/Lang/language-select')}>
+            <View style={styles.languageButtonContent}>
+              <Ionicons name="language-outline" size={24} color="#1976D2" />
+              <Text style={styles.languageSelectButtonText}>
+                {selectedLanguage
+                  ? `Selected: ${selectedLanguage.charAt(0).toUpperCase() + selectedLanguage.slice(1)}`
+                  : 'Select Language'}
+              </Text>
+              <Ionicons name="chevron-forward" size={16} color="#666" />
+            </View>
+          </TouchableOpacity>
 
           {/* Error Message */}
           {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
@@ -89,7 +60,7 @@ export default function Welcome() {
             <Text style={styles.secondaryButtonText}>Sign Up</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.guestButton} onPress={() => router.push('/')}>
+          <TouchableOpacity style={styles.guestButton} onPress={() => router.push('/' as any)}>
             <Ionicons name="person-outline" size={16} color="#666" />
             <Text style={styles.guestButtonText}>Continue as Guest</Text>
           </TouchableOpacity>
@@ -107,7 +78,7 @@ export default function Welcome() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#E3F2FD',
+    backgroundColor: '#f9fafb',
   },
   scrollContent: {
     flexGrow: 1,
@@ -159,31 +130,13 @@ const styles = StyleSheet.create({
     maxWidth: 350,
     marginBottom: 25,
   },
-  languageHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-    justifyContent: 'center',
-  },
-  languageLabel: {
-    fontSize: 16,
-    color: '#666',
-    marginLeft: 8,
-    fontFamily: 'Poppins_Regular',
-  },
-  languageButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: 15,
-  },
-  languageButton: {
-    flex: 1,
+  languageSelectButton: {
     backgroundColor: 'white',
-    paddingVertical: 15,
+    paddingVertical: 18,
     paddingHorizontal: 20,
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: '#E0E0E0',
+    borderColor: '#1976D2',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -193,25 +146,17 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
-  selectedLanguageButton: {
-    borderColor: '#4285F4',
-    backgroundColor: '#F8FAFF',
-  },
   languageButtonContent: {
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
   },
-  flagEmoji: {
-    fontSize: 24,
-    marginBottom: 8,
-  },
-  languageButtonText: {
-    fontSize: 14,
-    color: '#666',
-    fontFamily: 'Poppins_Regular',
-  },
-  selectedLanguageText: {
-    color: '#4285F4',
+  languageSelectButtonText: {
+    fontSize: 16,
+    color: '#1976D2',
     fontFamily: 'Poppins',
+    flex: 1,
+    textAlign: 'center',
   },
   errorText: {
     color: '#E53E3E',
@@ -226,11 +171,11 @@ const styles = StyleSheet.create({
     gap: 15,
   },
   primaryButton: {
-    backgroundColor: '#4285F4',
+    backgroundColor: '#1976D2',
     paddingVertical: 14,
     borderRadius: 12,
     alignItems: 'center',
-    shadowColor: '#4285F4',
+    shadowColor: '#1976D2',
     shadowOffset: {
       width: 0,
       height: 4,
@@ -246,7 +191,7 @@ const styles = StyleSheet.create({
   },
   secondaryButton: {
     backgroundColor: 'white',
-    borderColor: '#4285F4',
+    borderColor: '#1976D2',
     borderWidth: 2,
     paddingVertical: 14,
     borderRadius: 12,
@@ -261,7 +206,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   secondaryButtonText: {
-    color: '#4285F4',
+    color: '#1976D2',
     fontSize: 16,
     fontFamily: 'Poppins',
   },

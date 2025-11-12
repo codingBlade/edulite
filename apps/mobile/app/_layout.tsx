@@ -45,6 +45,7 @@ export default function RootLayout() {
           <Stack.Screen name="welcome" options={{ headerShown: false }} />
           <Stack.Screen name="(auth)" options={{ headerShown: false }} />
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="language-select" options={{ headerShown: true }} />
           <Stack.Screen name="tutorial/[id]" options={{ headerShown: false }} />
         </Stack>
       </AuthProvider>

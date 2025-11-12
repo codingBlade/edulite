@@ -1,8 +1,8 @@
-import React, { createContext, useEffect, useState } from 'react';
-import eng from './languages/eng';
-import sep from './languages/sep';
-import tso from './languages/tso';
-import ven from './languages/ven';
+import { createContext, useEffect, useState } from 'react';
+import eng from '../app/(Lang)/Languages/eng';
+import sep from '../app/(Lang)/languages/sep';
+import tso from '../app/(Lang)/languages/tso';
+import ven from '../app/(Lang)/languages/ven';
 
 // Language mapping
 const LANGUAGE_MAP = {
@@ -14,7 +14,7 @@ const LANGUAGE_MAP = {
 
 // Get initial language from storage or default to English
 const getInitialLanguage = async () => {
-  // You can add AsyncStorage here later to remember user's choice
+  //AsyncStorage here later to remember user's choice
   return 'eng';
 };
 
@@ -46,9 +46,6 @@ export const LanguageProvider = ({ children }) => {
     const selectedTranslations = LANGUAGE_MAP[lang] || eng;
     setLanguage(lang);
     setTranslations(selectedTranslations);
-
-    // Save to AsyncStorage if you want persistence
-    // AsyncStorage.setItem('userLanguage', lang);
   };
 
   // Translation function for dynamic keys
